@@ -4,20 +4,24 @@ p, admin, patient_data, write
 p, admin, patient_data, delete
 p, admin, model_artifacts, read
 p, admin, model_artifacts, write
+p, admin, training_data, read
+p, admin, training_data, write
+p, admin, aggregated_metrics, read
 
 p, ml_engineer, training_data, read
 p, ml_engineer, model_artifacts, read
 p, ml_engineer, model_artifacts, write
-# TODO: ml_engineer KHÔNG được delete production data
-# TODO: ml_engineer KHÔNG được đọc raw PII
+p, ml_engineer, aggregated_metrics, read
+# ml_engineer KHÔNG được delete production data / đọc raw PII:
+# default-deny — không cấp 'patient_data' nên mọi action trên đó bị từ chối.
 
 p, data_analyst, aggregated_metrics, read
 p, data_analyst, reports, write
-# TODO: data_analyst KHÔNG được đọc raw PII
+# data_analyst KHÔNG được đọc raw PII: không cấp 'patient_data'/'training_data'.
 
 p, intern, sandbox_data, read
 p, intern, sandbox_data, write
-# TODO: intern KHÔNG được access production
+# intern KHÔNG được access production: chỉ cấp 'sandbox_data'.
 
 # Role inheritance
 g, alice, admin

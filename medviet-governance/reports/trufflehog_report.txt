@@ -1,0 +1,4 @@
+TruffleHog không cài sẵn trong môi trường lab (Go binary).
+Thay thế: pre-commit hook dùng git-secrets + fallback grep đã chặn được fake AWS key.
+Để chạy thật:
+  trufflehog git file://. --only-verified

@@ -1,0 +1,26 @@
+{
+  "ge_suite": {
+    "success": true,
+    "failed_expectations": []
+  },
+  "custom": {
+    "success": true,
+    "failed_checks": [],
+    "stats": {
+      "total_rows": 200,
+      "columns": [
+        "patient_id",
+        "ho_ten",
+        "cccd",
+        "ngay_sinh",
+        "so_dien_thoai",
+        "email",
+        "dia_chi",
+        "benh",
+        "ket_qua_xet_nghiem",
+        "bac_si_phu_trach",
+        "ngay_kham"
+      ]
+    }
+  }
+}

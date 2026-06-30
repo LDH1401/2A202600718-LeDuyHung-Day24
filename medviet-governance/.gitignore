@@ -1,0 +1,19 @@
+# Môi trường & cache
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Secrets / keys — KHÔNG BAO GIỜ commit
+.vault_key
+*.vault_key*
+*.pem
+*.key
+
+# Dữ liệu gốc chứa PII — KHÔNG commit (chỉ commit data/processed đã ẩn danh)
+data/raw/*.csv
+
+# Great Expectations artifacts tạm
+gx/
+great_expectations/uncommitted/

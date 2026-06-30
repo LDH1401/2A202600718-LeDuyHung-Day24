@@ -1,0 +1,43 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.1.1, pluggy-1.6.0 -- /media/le-duy-hung/code/lab24/Day24-Track02-Lab-Assignment/medviet-governance/.venv/bin/python
+rootdir: /media/le-duy-hung/code/lab24/Day24-Track02-Lab-Assignment/medviet-governance
+plugins: anyio-4.14.1, Faker-40.23.0
+collecting ... collected 29 items
+
+tests/test_encryption.py::test_round_trip PASSED                         [  3%]
+tests/test_encryption.py::test_unique_dek_per_encryption PASSED          [  6%]
+tests/test_encryption.py::test_encrypt_column PASSED                     [ 10%]
+tests/test_pii.py::TestPIIDetection::test_cccd_detected PASSED           [ 13%]
+tests/test_pii.py::TestPIIDetection::test_phone_detected PASSED          [ 17%]
+tests/test_pii.py::TestPIIDetection::test_email_detected PASSED          [ 20%]
+tests/test_pii.py::TestPIIDetection::test_detection_rate_above_95_percent PASSED [ 24%]
+tests/test_pii.py::TestAnonymization::test_pii_not_in_output PASSED      [ 27%]
+tests/test_pii.py::TestAnonymization::test_non_pii_columns_unchanged PASSED [ 31%]
+tests/test_rbac.py::TestEnforcer::test_enforce[admin-patient_data-read-True] PASSED [ 34%]
+tests/test_rbac.py::TestEnforcer::test_enforce[admin-patient_data-delete-True] PASSED [ 37%]
+tests/test_rbac.py::TestEnforcer::test_enforce[ml_engineer-training_data-read-True] PASSED [ 41%]
+tests/test_rbac.py::TestEnforcer::test_enforce[ml_engineer-patient_data-read-False] PASSED [ 44%]
+tests/test_rbac.py::TestEnforcer::test_enforce[ml_engineer-production_data-delete-False] PASSED [ 48%]
+tests/test_rbac.py::TestEnforcer::test_enforce[data_analyst-aggregated_metrics-read-True] PASSED [ 51%]
+tests/test_rbac.py::TestEnforcer::test_enforce[data_analyst-patient_data-read-False] PASSED [ 55%]
+tests/test_rbac.py::TestEnforcer::test_enforce[intern-sandbox_data-write-True] PASSED [ 58%]
+tests/test_rbac.py::TestEnforcer::test_enforce[intern-patient_data-read-False] PASSED [ 62%]
+tests/test_rbac.py::TestApiRBAC::test_endpoint[GET-/api/patients/raw-token-alice-200] PASSED [ 65%]
+tests/test_rbac.py::TestApiRBAC::test_endpoint[GET-/api/patients/raw-token-bob-403] PASSED [ 68%]
+tests/test_rbac.py::TestApiRBAC::test_endpoint[GET-/api/patients/raw-None-401] PASSED [ 72%]
+tests/test_rbac.py::TestApiRBAC::test_endpoint[GET-/api/patients/raw-token-invalid-401] PASSED [ 75%]
+tests/test_rbac.py::TestApiRBAC::test_endpoint[GET-/api/patients/anonymized-token-bob-200] PASSED [ 79%]
+tests/test_rbac.py::TestApiRBAC::test_endpoint[GET-/api/patients/anonymized-token-carol-403] PASSED [ 82%]
+tests/test_rbac.py::TestApiRBAC::test_endpoint[GET-/api/metrics/aggregated-token-carol-200] PASSED [ 86%]
+tests/test_rbac.py::TestApiRBAC::test_endpoint[GET-/api/metrics/aggregated-token-dave-403] PASSED [ 89%]
+tests/test_rbac.py::TestApiRBAC::test_endpoint[DELETE-/api/patients/abc123-token-alice-200] PASSED [ 93%]
+tests/test_rbac.py::TestApiRBAC::test_endpoint[DELETE-/api/patients/abc123-token-bob-403] PASSED [ 96%]
+tests/test_rbac.py::TestApiRBAC::test_health PASSED                      [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /media/le-duy-hung/code/lab24/Day24-Track02-Lab-Assignment/medviet-governance/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 29 passed, 1 warning in 4.07s =========================

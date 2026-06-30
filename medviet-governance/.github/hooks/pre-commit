@@ -1,28 +1,60 @@
 #!/bin/bash
-# Pre-commit hook: chạy security checks trước khi commit
+# Pre-commit hook: chạy security checks trước khi commit.
+# Mỗi tool được chạy nếu có cài; nếu thiếu thì cảnh báo và bỏ qua (không chặn
+# nhầm), nhưng luôn có lớp fallback grep để chặn secret bị hardcode.
 
+set -u
 echo "🔍 Running security checks..."
+FAILED=0
 
-# 1. git-secrets scan
-git secrets --pre_commit_hook -- "$@"
-if [ $? -ne 0 ]; then
-    echo "❌ git-secrets found potential secrets! Commit blocked."
-    exit 1
+# Danh sách file được staged (chỉ quét file đang commit)
+STAGED=$(git diff --cached --name-only --diff-filter=ACM 2>/dev/null)
+
+# 1. git-secrets scan (nếu có)
+if command -v git-secrets >/dev/null 2>&1 || git secrets --version >/dev/null 2>&1; then
+    echo "🔑 Running git-secrets..."
+    if ! git secrets --pre_commit_hook -- "$@"; then
+        echo "❌ git-secrets found potential secrets! Commit blocked."
+        FAILED=1
+    fi
+else
+    echo "⚠️  git-secrets chưa cài — dùng fallback grep."
 fi
 
-# 2. Bandit SAST scan
-echo "🐍 Running Bandit SAST..."
-bandit -r src/ -ll -q
-if [ $? -ne 0 ]; then
-    echo "❌ Bandit found security issues! Review above."
-    exit 1
+# 1b. Fallback: tự quét pattern secret trên file staged
+if [ -n "$STAGED" ]; then
+    SECRET_PATTERNS='(AKIA[0-9A-Z]{16})|(aws_secret_access_key)|(secret_key\s*=\s*["'\''][^"'\'']+)|(password\s*=\s*["'\''][^"'\'']+)|([Cc][Cc][Cc][Dd][:[:space:]]+[0-9]{12})'
+    HITS=$(git grep -nIE "$SECRET_PATTERNS" -- $STAGED 2>/dev/null)
+    if [ -n "$HITS" ]; then
+        echo "❌ Phát hiện secret/PII bị hardcode trong file staged:"
+        echo "$HITS"
+        FAILED=1
+    fi
 fi
 
-# 3. pip-audit dependency check
-echo "📦 Checking dependencies for CVEs..."
-pip-audit --desc on
-if [ $? -ne 0 ]; then
-    echo "⚠️  Vulnerable dependencies found! Update before committing."
+# 2. Bandit SAST scan (nếu có)
+if command -v bandit >/dev/null 2>&1; then
+    echo "🐍 Running Bandit SAST..."
+    if ! bandit -r src/ -ll -q; then
+        echo "❌ Bandit found security issues! Review above."
+        FAILED=1
+    fi
+else
+    echo "⚠️  bandit chưa cài — bỏ qua SAST."
+fi
+
+# 3. pip-audit dependency check (nếu có; lỗi mạng chỉ cảnh báo)
+if command -v pip-audit >/dev/null 2>&1; then
+    echo "📦 Checking dependencies for CVEs..."
+    if ! pip-audit --desc on; then
+        echo "⚠️  pip-audit báo lỗi (CVE hoặc lỗi mạng) — kiểm tra ở trên."
+    fi
+else
+    echo "⚠️  pip-audit chưa cài — bỏ qua dependency scan."
+fi
+
+if [ "$FAILED" -ne 0 ]; then
+    echo "🚫 Commit bị chặn do phát hiện vấn đề bảo mật."
     exit 1
 fi
 
